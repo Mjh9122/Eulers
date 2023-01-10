@@ -1,44 +1,112 @@
 # include <iostream>
 # include <fstream>
+# include <math.h>
 using namespace std;
 
-int main(){
-    int n = 1000;
-    int m = 1000;
-    
-    int arr[n-1];
-    for(int i = 2; i < n; i++){
-        arr[i-2] = i;
-    }
+struct rarer_tonga{
+    int base;
+    long doubles;
+    double log;
+};
 
-    int primes[168] = {
-        2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137,
-        139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281,
-        283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449,
-        457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619,
-        631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 
-        821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997
-    };
-    
-    int factors[n-1][168];
-    for(int i = 0; i < n - 1; i++){
-        int temp = arr[i];
-        for(int j = 0; j < 168; j++){
-            factors[i][j] = 0;
-        }
-        for(int j = 0; j < 168; j++){
-            while (temp > primes[j] && (temp % primes[j] == 0)){
-                temp = temp/primes[j];
-                factors[i][j]++;
+
+int prep_skip(int n, rarer_tonga arr[]){
+    int count = 0;
+    while(arr[0].log * 2 < arr[n-2].log){
+        count++;
+        arr[0].log *= 2;
+        arr[0].doubles++;
+        for(int i = 0; i < n - 2; i ++){
+            if(arr[i].log < arr[i+1].log){
+                break;
+            }else{
+                rarer_tonga temp = arr[i];
+                arr[i] = arr[i+1];
+                arr[i+1] = temp;
             }
         }
     }
-    for(int i = 0; i < n-1; i++){
-        string prime_decomp = "";
-        for(int j = 0; j < 168; j++){
-            prime_decomp += to_string(factors[i][j]);
-        }
-        cout << prime_decomp << "\n";
+    return count;
+}
+
+int skip(int n, int m, int count, rarer_tonga arr[]){
+    int whole_rounds = (m-count)/(n-1);
+    for(int i = 0; i < n - 1; i++){
+        arr[i].doubles += whole_rounds;
     }
+    return (m-count)%(n-1);
+}
+
+int post_skip(int n, int left, rarer_tonga arr[]){
+    for(int i = 0; i < left; i++){
+        arr[0].log *= 2;
+        arr[0].doubles++;
+        for(int i = 0; i < n - 2; i ++){
+            if(arr[i].log < arr[i+1].log){
+                break;
+            }else{
+                rarer_tonga temp = arr[i];
+                arr[i] = arr[i+1];
+                arr[i+1] = temp;
+            }
+        }
+    }
+    return 1;
+}
+
+void append(int len, long arr[], long app){
+    long newarr[len+1];
+    for(int i = 0; i < len-1; i ++){
+        newarr[i] = arr[i];
+    }
+    newarr[len] = app;
+    arr = newarr;
+
+}
+
+bool contains(int len, long arr[], long test){
+    for(int i = 0; i < len; i++){
+        if(arr[i] == test){
+            return true;
+        }
+    }
+    return false;
+}
+
+void generate_strings(int n, rarer_tonga arr[]){
+    long exps[0];
+    for(int i = 0; i < n - 1; i ++){
+        if(!contains(n-1, exps, arr[i].doubles)){
+            append(sizeof(exps), exps, arr[i].doubles);
+        }
+    }
+    cout << sizeof(exps);
+    return;
+} 
+
+int main(){
+    // Init vars
+    int n = 1000;
+    int m = 1000;
+    rarer_tonga* arr = new rarer_tonga[n-1];
+    // Create array to store all of our custom objects
+    for(int i = 2; i <= n; i++){
+        arr[i-2].base = i;
+        arr[i-2].doubles = 0;
+        arr[i-2].log = log(i);
+    }
+    // next we run the doubling until the logs of the smallest is larger than the largest
+    int count = prep_skip(n, arr);
+    // we then skip most of the iteration as it now forms a cycle
+    int left = skip(n, m, count, arr);
+    // we finish the iteration here
+    int done = post_skip(n, left, arr);
+    // next we generate some helpful strings
+    generate_strings(n, arr);
+
+    cout << count << " " << left << " " << done;
+
+    // Free allocated memory
+    delete [] arr;
     return 0;
 }
