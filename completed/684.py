@@ -67,8 +67,6 @@ if __name__ == "__main__":
     fibs = [1, 1]
     for i in range(88):
         fibs.append(fibs[-2]+fibs[-1])
-    print(fibs)
-    print(by_nines_with_bin(20))
     
     with Pool() as pool:
         r = list(tqdm(pool.imap(by_nines_with_bin, fibs), total=90))
