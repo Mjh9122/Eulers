@@ -1,5 +1,5 @@
 # Eulers
-Some selected project euler solutions. Written in python all code is mine unless stated otherwise in the problem.   
-Username on project Euler: Mholtz   
-Currently solved 93 problems putting me at top 1.5% ish of solvers  
-
+Some selected project euler solutions written in python all code is mine unless stated otherwise in the problem.
+For a quick summary, look at the Highlight Solutions folder for a few solutions I am proud of.
+Most of the solutions represent a just get the right answer mindset, and some solutions will take hours, as I wrote them to run in the backround while working on other problems. 
+My project euler account: [Mholtz]{https://projecteuler.net/about}
