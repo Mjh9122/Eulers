@@ -1,3 +1,10 @@
+# Michael Holtz
+# Python Solution for Project Euler Problem #684
+# All code is mine 
+# Problem:
+# For each of the first 90 Fibonacci sequence numbers, F, find the smallest number such that the sum of its digits is F. Sum all of these numbers, and return it mod 1_000_000_007
+# Multiprocessing may be overkill, but fun nonetheless
+
 from multiprocessing import Pool
 from tqdm import tqdm
 import timeit

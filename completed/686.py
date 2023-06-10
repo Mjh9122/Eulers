@@ -1,3 +1,7 @@
+# Michael Holtz
+# Lazy Python Solution for Project Euler Problem #686
+# All code is mine
+
 import math
 
 if __name__ == "__main__":
